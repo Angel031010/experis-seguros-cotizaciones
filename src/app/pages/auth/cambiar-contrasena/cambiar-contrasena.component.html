@@ -1,0 +1,119 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="h4 mb-0">
+            <i class="bi bi-key"></i> Cambiar Contraseña
+          </h2>
+        </div>
+        <div class="card-body">
+          @if (success()) {
+            <div class="alert alert-success">
+              <i class="bi bi-check-circle"></i>
+              Contraseña actualizada exitosamente. Redirigiendo...
+            </div>
+          }
+
+          @if (error()) {
+            <div class="alert alert-danger">
+              <i class="bi bi-exclamation-circle"></i>
+              {{ error() }}
+            </div>
+          }
+
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmit()">
+            <!-- Contraseña Actual -->
+            <div class="mb-3">
+              <label class="form-label">Contraseña Actual</label>
+              <div class="input-group">
+                <input 
+                  [type]="showPasswords.actual ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="passwordActual"
+                  [class.is-invalid]="passwordForm.get('passwordActual')?.touched && passwordForm.get('passwordActual')?.invalid"
+                >
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="togglePasswordVisibility('actual')"
+                >
+                  <i [class]="showPasswords.actual ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="passwordForm.get('passwordActual')?.touched && passwordForm.get('passwordActual')?.invalid">
+                La contraseña actual es requerida
+              </div>
+            </div>
+
+            <!-- Nueva Contraseña -->
+            <div class="mb-3">
+              <label class="form-label">Nueva Contraseña</label>
+              <div class="input-group">
+                <input 
+                  [type]="showPasswords.nuevo ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="passwordNuevo"
+                  [class.is-invalid]="passwordForm.get('passwordNuevo')?.touched && passwordForm.get('passwordNuevo')?.invalid"
+                >
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="togglePasswordVisibility('nuevo')"
+                >
+                  <i [class]="showPasswords.nuevo ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="passwordForm.get('passwordNuevo')?.touched && passwordForm.get('passwordNuevo')?.invalid">
+                La contraseña debe tener al menos 6 caracteres
+              </div>
+            </div>
+
+            <!-- Confirmar Contraseña -->
+            <div class="mb-4">
+              <label class="form-label">Confirmar Nueva Contraseña</label>
+              <div class="input-group">
+                <input 
+                  [type]="showPasswords.confirmar ? 'text' : 'password'"
+                  class="form-control"
+                  formControlName="confirmarPassword"
+                  [class.is-invalid]="passwordForm.get('confirmarPassword')?.touched && passwordForm.get('confirmarPassword')?.errors"
+                >
+                <button 
+                  class="btn btn-outline-secondary" 
+                  type="button"
+                  (click)="togglePasswordVisibility('confirmar')"
+                >
+                  <i [class]="showPasswords.confirmar ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+              <div class="invalid-feedback d-block" *ngIf="passwordForm.get('confirmarPassword')?.touched && passwordForm.get('confirmarPassword')?.errors">
+                Las contraseñas no coinciden
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button 
+                type="button" 
+                class="btn btn-secondary"
+                routerLink="/polizas"
+              >
+                Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading() || passwordForm.invalid"
+              >
+                @if (loading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                Cambiar Contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
