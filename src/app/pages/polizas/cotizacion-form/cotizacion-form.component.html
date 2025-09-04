@@ -1,1 +1,106 @@
-<p>cotizacion-form works!</p>
+<!-- cotizacion-form.component.html -->
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h2 class="h4 mb-0">
+            <i class="bi bi-file-earmark-text"></i>
+            {{ isEditMode() ? 'Editar Póliza' : 'Nueva Cotización' }}
+          </h2>
+        </div>
+        <div class="card-body">
+          @if (error()) {
+            <div class="alert alert-danger" role="alert">
+              {{ error() }}
+            </div>
+          }
+
+          <form [formGroup]="cotizacionForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="tipoPolizaId" class="form-label">Tipo de Póliza *</label>
+                <select 
+                  id="tipoPolizaId"
+                  class="form-select"
+                  formControlName="tipoPolizaId"
+                  [class.is-invalid]="cotizacionForm.get('tipoPolizaId')?.touched && cotizacionForm.get('tipoPolizaId')?.invalid"
+                >
+                  <option value="">Seleccione...</option>
+                  @for (tipo of tiposPoliza; track tipo.id) {
+                    <option [value]="tipo.id">{{ tipo.nombre }}</option>
+                  }
+                </select>
+                <div class="invalid-feedback">
+                  El tipo de póliza es requerido
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="fechaInicio" class="form-label">Fecha de Inicio *</label>
+                <input 
+                  type="date"
+                  id="fechaInicio"
+                  class="form-control"
+                  formControlName="fechaInicio"
+                  [class.is-invalid]="cotizacionForm.get('fechaInicio')?.touched && cotizacionForm.get('fechaInicio')?.invalid"
+                  [min]="today"
+                >
+                <div class="invalid-feedback">
+                  La fecha de inicio es requerida
+                </div>
+              </div>
+            </div>
+
+            @if (isEditMode()) {
+              <div class="mb-3">
+                <label for="montoPrima" class="form-label">Monto de Prima</label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  <input 
+                    type="number"
+                    id="montoPrima"
+                    class="form-control"
+                    formControlName="montoPrima"
+                    step="0.01"
+                  >
+                </div>
+                <small class="text-muted">
+                  Monto calculado según género: Mujer $2,500.00 | Hombre $2,000.00
+                </small>
+              </div>
+            }
+
+            @if (!isEditMode()) {
+              <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                El monto de la prima se calculará automáticamente según su género registrado.
+              </div>
+            }
+
+            <div class="d-flex justify-content-between mt-4">
+              <button 
+                type="button" 
+                class="btn btn-secondary"
+                (click)="cancelar()"
+              >
+                <i class="bi bi-x-circle"></i> Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="loading() || cotizacionForm.invalid"
+              >
+                @if (loading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                }
+                <i class="bi bi-save"></i>
+                {{ isEditMode() ? 'Actualizar' : 'Crear Cotización' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
