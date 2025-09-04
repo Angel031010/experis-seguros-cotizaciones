@@ -1,0 +1,154 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/polizas">
+      <i class="bi bi-shield-check fs-4 me-2"></i>
+      <span class="fw-bold">Experis Seguros</span>
+    </a>
+
+    <!-- Botón para móvil -->
+    <button 
+      class="navbar-toggler" 
+      type="button" 
+      (click)="toggleNavbar()"
+      [attr.aria-expanded]="!isNavbarCollapsed"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Menú colapsable -->
+    <div class="collapse navbar-collapse" [class.show]="!isNavbarCollapsed">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <!-- Inicio -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            routerLink="/polizas" 
+            routerLinkActive="active"
+            (click)="closeMenus()"
+          >
+            <i class="bi bi-house-door me-1"></i>
+            Inicio
+          </a>
+        </li>
+
+        <!-- Mis Pólizas -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            routerLink="/polizas" 
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{exact: true}"
+            (click)="closeMenus()"
+          >
+            <i class="bi bi-file-text me-1"></i>
+            Mis Pólizas
+          </a>
+        </li>
+
+        <!-- Nueva Cotización -->
+        <li class="nav-item">
+          <a 
+            class="nav-link" 
+            routerLink="/cotizar" 
+            routerLinkActive="active"
+            (click)="closeMenus()"
+          >
+            <i class="bi bi-plus-circle me-1"></i>
+            Nueva Cotización
+          </a>
+        </li>
+
+        <!-- Administración (solo para Admin) -->
+        @if (userRole === 'Admin') {
+          <li class="nav-item dropdown">
+            <a 
+              class="nav-link dropdown-toggle" 
+              href="#" 
+              role="button" 
+              data-bs-toggle="dropdown"
+            >
+              <i class="bi bi-gear me-1"></i>
+              Administración
+            </a>
+            <ul class="dropdown-menu">
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-people me-2"></i>
+                  Usuarios
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#">
+                  <i class="bi bi-bar-chart me-2"></i>
+                  Reportes
+                </a>
+              </li>
+            </ul>
+          </li>
+        }
+      </ul>
+
+      <!-- Menú de usuario -->
+      <div class="navbar-nav">
+        <div class="nav-item dropdown">
+          <a 
+            class="nav-link dropdown-toggle d-flex align-items-center" 
+            href="javascript:void(0)"
+            (click)="toggleUserMenu($event)"
+            [class.show]="showUserMenu"
+          >
+            <!-- Avatar con iniciales -->
+            <span class="avatar-circle bg-white text-primary me-2">
+              {{ userInitials }}
+            </span>
+            <span class="d-none d-lg-inline">{{ userName }}</span>
+          </a>
+          
+          <div 
+            class="dropdown-menu dropdown-menu-end" 
+            [class.show]="showUserMenu"
+          >
+            <!-- Información del usuario -->
+            <div class="px-3 py-2 border-bottom">
+              <div class="fw-bold">{{ userName }}</div>
+              <small class="text-muted">{{ authService.currentUser()?.email }}</small>
+              <div>
+                <span class="badge bg-secondary mt-1">{{ userRole }}</span>
+              </div>
+            </div>
+
+            <!-- Cambiar Contraseña -->
+            <button 
+              class="dropdown-item btn btn-link text-start w-100" 
+              type="button"
+              (click)="navigateToChangePassword()"
+            >
+              <i class="bi bi-key me-2"></i>
+              Cambiar Contraseña
+            </button>
+
+            <div class="dropdown-divider"></div>
+
+            <!-- Cerrar Sesión -->
+            <button 
+              class="dropdown-item text-danger btn btn-link text-start w-100" 
+              type="button"
+              (click)="logout()"
+            >
+              <i class="bi bi-box-arrow-right me-2"></i>
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay para cerrar menús en móvil -->
+@if (showUserMenu || !isNavbarCollapsed) {
+  <div 
+    class="navbar-overlay d-lg-none" 
+    (click)="closeMenus()"
+  ></div>
+}
