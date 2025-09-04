@@ -1,1 +1,98 @@
-<p>detalle-poliza works!</p>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      @if (loading()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      } @else if (error()) {
+        <div class="alert alert-danger">
+          {{ error() }}
+        </div>
+      } @else if (poliza()) {
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+              <h2 class="h4 mb-0">
+                <i class="bi bi-file-text"></i> Detalle de Póliza
+              </h2>
+              <span class="badge bg-{{ getEstadoClass(poliza()!.estado) }} fs-6">
+                {{ poliza()!.estado }}
+              </span>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <div class="row mb-4">
+              <div class="col text-center">
+                <h1 class="display-6 text-primary">{{ poliza()!.numeroPoliza }}</h1>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <h5 class="text-muted mb-3">Información del Cliente</h5>
+                <dl class="row">
+                  <dt class="col-sm-4">Nombre:</dt>
+                  <dd class="col-sm-8">{{ poliza()!.clienteNombre }}</dd>
+                  
+                  <dt class="col-sm-4">Email:</dt>
+                  <dd class="col-sm-8">{{ poliza()!.clienteEmail }}</dd>
+                  
+                  <dt class="col-sm-4">Teléfono:</dt>
+                  <dd class="col-sm-8">{{ poliza()!.clienteTelefono }}</dd>
+                </dl>
+              </div>
+              
+              <div class="col-md-6">
+                <h5 class="text-muted mb-3">Información de la Póliza</h5>
+                <dl class="row">
+                  <dt class="col-sm-4">Tipo:</dt>
+                  <dd class="col-sm-8">
+                    <span class="badge bg-info">{{ poliza()!.tipoPoliza }}</span>
+                  </dd>
+                  
+                  <dt class="col-sm-4">Fecha Inicio:</dt>
+                  <dd class="col-sm-8">{{ poliza()!.fechaInicio | date:'dd/MM/yyyy' }}</dd>
+                  
+                  <dt class="col-sm-4">Fecha Fin:</dt>
+                  <dd class="col-sm-8">{{ poliza()!.fechaFin | date:'dd/MM/yyyy' }}</dd>
+                  
+                  <dt class="col-sm-4">Prima:</dt>
+                  <dd class="col-sm-8">
+                    <strong class="text-success">${{ poliza()!.montoPrima | number:'1.2-2' }}</strong>
+                  </dd>
+                </dl>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row">
+              <div class="col-12">
+                <p class="text-muted mb-0">
+                  <small>
+                    Fecha de creación: {{ poliza()!.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-footer">
+            <div class="d-flex justify-content-between">
+              <a routerLink="/polizas" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+              </a>
+              <button class="btn btn-primary" (click)="imprimir()">
+                <i class="bi bi-printer"></i> Imprimir
+              </button>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
