@@ -1,29 +1,52 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { CotizacionFormComponent } from './pages/polizas/cotizacion-form/cotizacion-form.component';
-import { ListaPolizasComponent } from './pages/polizas/lista-polizas/lista-polizas.component';
-import { DetallePolizaComponent } from './pages/polizas/detalle-poliza/detalle-poliza.component';
+import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
     {
         path: '',
-        redirectTo: '/home',
+        redirectTo: '/login',
         pathMatch: 'full'
     },
     {
         path: 'login',
-        component: LoginComponent
+        loadComponent: () => import('./pages/auth/login/login.component').then(m => m.LoginComponent)
     },
-    {   path: 'cotizar',
-        component: CotizacionFormComponent
+    {
+        path: 'cambiar-contrasena',
+        loadComponent: () => import('./pages/auth/cambiar-contrasena/cambiar-contrasena.component').then(m => m.CambiarContrasenaComponent),
+        canActivate: [authGuard]
     },
-    {   path: 'polizas',
-        component: ListaPolizasComponent
+    {   
+        path: 'cotizar',
+        loadComponent: () => import('./pages/polizas/cotizacion-form/cotizacion-form.component').then(m => m.CotizacionFormComponent),
+        canActivate: [authGuard]
     },
-    {   path: 'polizas/editar/:id',
-        component: ListaPolizasComponent 
+    {   
+        path: 'polizas',
+        loadComponent: () => import('./pages/polizas/lista-polizas/lista-polizas.component').then(m => m.ListaPolizasComponent),
+        canActivate: [authGuard]
     },
-    {   path: 'polizas/detalle/:id', 
-        component: DetallePolizaComponent 
+    {   
+        path: 'polizas/editar/:id',
+        loadComponent: () => import('./pages/polizas/cotizacion-form/cotizacion-form.component').then(m => m.CotizacionFormComponent),
+        canActivate: [authGuard],
+        data: { 
+            mode: 'edit',
+            requiredRoles: ['Admin', 'Broker']
+        }
     },
+    {   
+        path: 'polizas/detalle/:id', 
+        loadComponent: () => import('./pages/polizas/detalle-poliza/detalle-poliza.component').then(m => m.DetallePolizaComponent),
+        canActivate: [authGuard]
+    },
+    {
+        path: 'home',
+        loadComponent: () => import('./pages/polizas/lista-polizas/lista-polizas.component').then(m => m.ListaPolizasComponent),
+        canActivate: [authGuard]
+    },
+    {
+        path: '**',
+        redirectTo: '/login'
+    }
 ];
