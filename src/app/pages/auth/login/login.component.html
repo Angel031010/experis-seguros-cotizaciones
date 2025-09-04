@@ -1,0 +1,79 @@
+<!-- features/auth/login/login.component.html -->
+<div class="min-vh-100 d-flex align-items-center justify-content-center bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-5 col-lg-4">
+        <div class="card shadow">
+          <div class="card-body p-5">
+            <h1 class="h3 mb-4 text-center">Experis Seguros</h1>
+            <h2 class="h5 mb-4 text-center text-muted">Iniciar Sesión</h2>
+            
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="mb-3">
+                <label for="email" class="form-label">Correo Electrónico</label>
+                <input 
+                  type="email" 
+                  id="email"
+                  class="form-control" 
+                  formControlName="email"
+                  [class.is-invalid]="f['email'].touched && f['email'].errors"
+                  placeholder="correo@ejemplo.com"
+                >
+                <div class="invalid-feedback" *ngIf="f['email'].touched && f['email'].errors">
+                  <span *ngIf="f['email'].errors?.['required']">El correo es requerido</span>
+                  <span *ngIf="f['email'].errors?.['email']">Ingrese un correo válido</span>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <input 
+                  type="password" 
+                  id="password"
+                  class="form-control" 
+                  formControlName="password"
+                  [class.is-invalid]="f['password'].touched && f['password'].errors"
+                >
+                <div class="invalid-feedback" *ngIf="f['password'].touched && f['password'].errors">
+                  <span *ngIf="f['password'].errors?.['required']">La contraseña es requerida</span>
+                  <span *ngIf="f['password'].errors?.['minlength']">Mínimo 6 caracteres</span>
+                </div>
+              </div>
+
+              @if (error()) {
+                <div class="alert alert-danger" role="alert">
+                  {{ error() }}
+                </div>
+              }
+
+              <button 
+                type="submit" 
+                class="btn btn-primary w-100"
+                [disabled]="loading()"
+              >
+                @if (loading()) {
+                  <span class="spinner-border spinner-border-sm me-2"></span>
+                  Iniciando sesión...
+                } @else {
+                  Iniciar Sesión
+                }
+              </button>
+            </form>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+              <small class="text-muted">Usuarios de prueba:</small>
+              <div class="mt-2">
+                <!--<small class="d-block">Admin: carlos.ramirez@experis.com</small>
+                <small class="d-block">Broker: andrea.mendoza@experis.com</small>
+                <small class="d-block">Cliente: fernando.lopez@gmail.com</small>
+                <small class="d-block mt-1">Contraseña: [Rol]123!</small> >>-->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
