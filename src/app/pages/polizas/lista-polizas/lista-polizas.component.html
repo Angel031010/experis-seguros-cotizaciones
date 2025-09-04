@@ -1,1 +1,125 @@
-<p>lista-polizas works!</p>
+<div class="container-fluid mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h4 mb-0">
+          <i class="bi bi-list-ul"></i> Lista de Pólizas
+        </h2>
+        <a routerLink="/cotizar" class="btn btn-light btn-sm">
+          <i class="bi bi-plus-circle"></i> Nueva Cotización
+        </a>
+      </div>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filtros -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <input 
+            type="text" 
+            class="form-control" 
+            placeholder="Buscar por número, cliente o tipo..."
+            [(ngModel)]="filtro"
+            (ngModelChange)="aplicarFiltros()"
+          >
+        </div>
+        <div class="col-md-3">
+          <select 
+            class="form-select" 
+            [(ngModel)]="filtroEstado"
+            (ngModelChange)="aplicarFiltros()"
+          >
+            <option value="">Todos los estados</option>
+            <option value="Cotizada">Cotizada</option>
+            <option value="Autorizada">Autorizada</option>
+            <option value="Rechazada">Rechazada</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      @if (loading()) {
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+        </div>
+      } @else if (error()) {
+        <div class="alert alert-danger">
+          {{ error() }}
+        </div>
+      } @else if (polizasFiltradas().length === 0) {
+        <div class="alert alert-info">
+          No se encontraron pólizas
+        </div>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Número</th>
+                <th>Cliente</th>
+                <th>Tipo</th>
+                <th>Fecha Inicio</th>
+                <th>Prima</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (poliza of polizasFiltradas(); track poliza.id) {
+                <tr>
+                  <td>{{ poliza.numeroPoliza }}</td>
+                  <td>{{ poliza.clienteNombre }}</td>
+                  <td>{{ poliza.tipoPoliza }}</td>
+                  <td>{{ poliza.fechaInicio | date:'dd/MM/yyyy' }}</td>
+                  <td>${{ poliza.montoPrima | number:'1.2-2' }}</td>
+                  <td>
+                    <span class="badge bg-{{ getEstadoClass(poliza.estado) }}">
+                      {{ poliza.estado }}
+                    </span>
+                  </td>
+                  <td>
+                    <a 
+                      [routerLink]="['/polizas/detalle', poliza.id]" 
+                      class="btn btn-sm btn-info me-1"
+                      title="Ver detalle"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </a>
+                    
+                    @if (canEditOrAuthorize() && poliza.estado === 'Cotizada') {
+                      <a 
+                        [routerLink]="['/polizas/editar', poliza.id]" 
+                        class="btn btn-sm btn-warning me-1"
+                        title="Editar"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      
+                      <button 
+                        class="btn btn-sm btn-success me-1"
+                        (click)="autorizarPoliza(poliza.id)"
+                        title="Autorizar"
+                      >
+                        <i class="bi bi-check-circle"></i>
+                      </button>
+                      
+                      <button 
+                        class="btn btn-sm btn-danger"
+                        (click)="rechazarPoliza(poliza.id)"
+                        title="Rechazar"
+                      >
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
+  </div>
+</div>
